@@ -1,33 +1,26 @@
 fname = 'schema.sw'
-
 meanings = {}
-
-sections = {
-  0: [], 
-  1: [], 
-  2: [], 
-  3: []
-}
-
 schema = []
+queries = []
+current = []
 
-with open(fname) as f:
-    for line in f.readlines():
-      schema.append(line.strip('\n').strip(' '))
+def readSchema(filename):
+  with open(fname) as f:
+      for line in f.readlines():
+        schema.append(line.strip('\n').strip(' '))
 
-for element in schema:
-  sections[0].append(element)
+def parseSchema(schema, queries, current):
+  for a in schema:
+    if a == '':
+      queries.append(current)
+      current = []
+    else:
+      current.append(a)
 
-  if len(element) == 0:
-    sections[1].append(element)
+  queries.append(current)
 
+if __name__ == '__main__':
+  readSchema(fname)
+  parseSchema(schema, queries, current)
 
-for section in schema:
-  while 'end' not in section:
-    sections[len(sections)].update(section)
-
-for query in schema:
-  if ':' in query:
-    meanings[schema.index(query)] = 'CREATE TABLE IF NOT EXISTS %s' % query.replace(':', '').replace('\n', '')
-
-print meanings
+  print(queries)
