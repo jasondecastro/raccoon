@@ -3,8 +3,6 @@ users:
   password
   email
 
-items:
-  title
-
-classes:
-  name
+students:
+  first_name
+  last_name
