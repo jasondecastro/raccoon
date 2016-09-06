@@ -1,5 +1,5 @@
 users:
-  username
+  username VARCHAR(120)
   password
   email
 

@@ -4,6 +4,7 @@ schema = []
 queries = []
 current = []
 sql = []
+datatypes = ["integer", "string", "boolean"]
 
 def readSchema(filename):
   with open(fname) as f:
@@ -29,17 +30,23 @@ def convertSchema(schema):
 
     for line in query:
       if ':' not in line:
-        string.append('  ' + line + ' STRING,')
+        if len(line.split(" ")) > 1:
+          string.append('  ' + line + ',')
+        else:
+          string.append('  ' + line + ' STRING,')
+
+    string[-1] = string[-1].strip(',')
+    sql.append("CREATE TABLE IF NOT EXISTS %s ( id INTEGER PRIMARY KEY AUTOINCREMENT, %*s );" % (query[0].strip(':'), len(query) - 1, "\n".join(string).strip(' ').replace('\n', '')))
+    print sql
 
     print "The `%s` table will be created with %s columns.\n" % (query[0].strip(':'), len(query) - 1)
     print """CREATE TABLE IF NOT EXISTS %s (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
 %*s
-)
+);
     """ % (query[0].strip(':'), len(query) - 1, "\n".join(string))
-
 
 if __name__ == '__main__':
   readSchema(fname)
   parseSchema(schema, queries, current)
   convertSchema(schema)
-
