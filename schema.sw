@@ -1,8 +1,12 @@
-users:
-  username VARCHAR(120)
-  password
-  email
+engine: pg
 
-students:
-  first_name
-  last_name
+flatironschool:
+  users:
+    username
+    password
+    email
+    phone
+
+  students:
+    first_name
+    last_name

@@ -46,7 +46,17 @@ def convertSchema(schema):
 );
     """ % (query[0].strip(':'), len(query) - 1, "\n".join(string))
 
+def runQueries(sql, engine="sqlite"):
+  import sqlite3
+
+  con = sqlite3.connect('test.db')
+  cur = con.cursor() 
+  for query in sql:
+    cur.execute(query)
+  con.commit()
+
 if __name__ == '__main__':
   readSchema(fname)
   parseSchema(schema, queries, current)
   convertSchema(schema)
+  runQueries(sql)
