@@ -16,5 +16,9 @@ setup(
     author_email='jasonrdecastro@gmail.com',
     url='https://github.com/jasondecastro/raccoon',
     license=license,
-    packages=find_packages(exclude=('tests', 'docs'))
+    packages=find_packages(exclude=('tests', 'docs')),
+    platforms='any',
+    install_requires=read('requirements.txt').splitlines(),
+    zip_safe=False,
+    entry_points={'console_scripts': ['raccoon = core']}
 )
