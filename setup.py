@@ -9,16 +9,15 @@ with open('LICENSE') as f:
 
 setup(
     name='raccoon',
-    version='1.0',
+    version='1.3',
     description='Raccoon is a language wrapper for SQL that makes it easier and more intuitive to write SQL code.',
-    long_description=readme,
+    long_description="wow",
     author='Jason Decastro',
     author_email='jasonrdecastro@gmail.com',
     url='https://github.com/jasondecastro/raccoon',
     license=license,
     packages=find_packages(exclude=('tests', 'docs')),
     platforms='any',
-    install_requires=read('requirements.txt').splitlines(),
     zip_safe=False,
-    entry_points={'console_scripts': ['raccoon = core']}
+    scripts=['bin/raccoon']
 )

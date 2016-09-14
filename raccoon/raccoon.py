@@ -29,7 +29,6 @@ def parseSchema(schema, queries, current):
 
 def convertSchema(schema):
   string = []
-  print queries
 
   for query in queries:
     columns = str(len(query) - 1)
@@ -44,7 +43,6 @@ def convertSchema(schema):
 
     string[-1] = string[-1].strip(',')
     sql.append("CREATE TABLE IF NOT EXISTS %s ( id INTEGER PRIMARY KEY AUTOINCREMENT, %*s );" % (query[1].strip(':'), len(query) - 1, "\n".join(string).strip(' ').replace('\n', '')))
-    print sql
 
     print "The `%s` table will be created with %s columns.\n" % (query[1].strip(':'), len(query) - 1)
     print """CREATE TABLE IF NOT EXISTS %s (
@@ -57,14 +55,13 @@ def convertSchema(schema):
 
 def runQueries(sql, engine="sqlite"):
   import sqlite3
-  print database
   con = sqlite3.connect(database[0] + '.db')
   cur = con.cursor() 
   for query in sql:
     cur.execute(query)
   con.commit()
 
-if __name__ == '__main__':
+def run():
   readSchema(fname)
   parseSchema(schema, queries, current)
   convertSchema(schema)
