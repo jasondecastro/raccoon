@@ -1,3 +1,17 @@
 flatironschool:
-  users:
-    name
+  students:
+    first_name
+    last_name
+    phone_number
+    email
+
+  instructors:
+    first_name
+    last_name
+    email
+    rank
+    admin?
+
+  dean:
+    full_name
+    contact_information

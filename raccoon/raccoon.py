@@ -2,12 +2,15 @@
 
 import sys
 
-print sys.argv[1]
 fname = sys.argv[1]
-meanings = {}
+action = ''
+if len(sys.argv) == 3:
+  action = sys.argv[2]
 schema = []
 queries = []
 current = []
+converted_schema = []
+db = []
 sql = []
 datatypes = ["integer", "string", "boolean"]
 database = []
@@ -31,6 +34,15 @@ def convertSchema(schema):
   string = []
 
   for query in queries:
+    db.append(query[0])
+
+  global dbname
+  dbname = db[0]
+  queries[0].remove(db[0])
+
+  dbname = dbname.strip(":")
+
+  for query in queries:
     columns = str(len(query) - 1)
     string = []
 
@@ -41,21 +53,30 @@ def convertSchema(schema):
         else:
           string.append('  ' + line + ' STRING,')
 
-    string[-1] = string[-1].strip(',')
-    sql.append("CREATE TABLE IF NOT EXISTS %s ( id INTEGER PRIMARY KEY AUTOINCREMENT, %*s );" % (query[1].strip(':'), len(query) - 1, "\n".join(string).strip(' ').replace('\n', '')))
+        for reaction in string:
+          if '?' in reaction:
+            string[string.index(reaction)] = reaction.replace("?","").replace("STRING", "BOOLEAN")
 
-    print "The `%s` table will be created with %s columns.\n" % (query[1].strip(':'), len(query) - 1)
-    print """CREATE TABLE IF NOT EXISTS %s (
+    string[-1] = string[-1].strip(',')
+    sql.append("CREATE TABLE IF NOT EXISTS %s ( id INTEGER PRIMARY KEY AUTOINCREMENT, %*s );" % (query[0].strip(':'), len(query) - 1, "\n".join(string).strip(' ').replace('\n', '')))
+
+    # print "The `%s` table will be created with %s columns.\n" % (query[0].strip(':'), len(query) - 1)
+
+    converted_schema.append("""CREATE TABLE IF NOT EXISTS %s (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
 %*s
 );
-    """ % (query[1].strip(':'), len(query) - 1, "\n".join(string))
+    """ % (query[0].strip(':'), len(query) - 1, "\n".join(string)))
+
+    # print converted_schema
 
     database.append(query[0].strip(':'))
 
+
+
 def runQueries(sql, engine="sqlite"):
   import sqlite3
-  con = sqlite3.connect(database[0] + '.db')
+  con = sqlite3.connect(dbname + '.db')
   cur = con.cursor() 
   for query in sql:
     cur.execute(query)
@@ -65,4 +86,11 @@ def run():
   readSchema(fname)
   parseSchema(schema, queries, current)
   convertSchema(schema)
-  runQueries(sql)
+  if action == 'raw':
+    with open('schema.sql', 'a') as target:
+      target.write("\n".join(converted_schema))
+  else:
+    runQueries(sql)
+
+if __name__ == '__main__':
+  run()
